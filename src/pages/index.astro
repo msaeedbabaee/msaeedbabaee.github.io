@@ -138,25 +138,36 @@ const techStack = techStackEntry!.data;
     </section>
 
     <!-- Tech Stack -->
-    <section id="tech-stack" class="space-y-8 scroll-mt-20">
+    <section id="tech-stack" class="space-y-6 scroll-mt-20">
       <div>
         <h2 class="text-2xl font-bold tracking-tight text-foreground">Tech Stack</h2>
         <p class="text-sm text-muted-foreground mt-1">Tools and technologies I work with.</p>
       </div>
 
-      <div class="space-y-8">
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {techStack.categories.map((category) => (
-          <div class="space-y-3">
-            <h3 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{category.name}</h3>
-            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-              {category.skills.map((skillName) => {
-                const { color, letter } = getSkillVisual(skillName);
+          <div class="rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5">
+            <h3 class="text-sm font-semibold text-foreground mb-4">{category.name}</h3>
+            <div class="grid grid-cols-3 gap-3">
+              {category.skills.map((skill) => {
+                const { color, letter } = getSkillVisual(skill.name);
                 return (
-                  <div class="group flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5">
-                    <div class={`flex h-12 w-12 items-center justify-center rounded-lg ${color} text-white text-sm font-bold shadow-sm`}>
-                      {letter}
-                    </div>
-                    <span class="text-xs font-medium text-foreground text-center leading-tight">{skillName}</span>
+                  <div class="flex flex-col items-center gap-1.5">
+                    {skill.icon ? (
+                      <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-muted/60 p-1.5">
+                        <img
+                          src={`https://skillicons.dev/icons?i=${skill.icon}`}
+                          alt={skill.name}
+                          class="h-full w-full object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : (
+                      <div class={`flex h-12 w-12 items-center justify-center rounded-lg ${color} text-white text-sm font-bold shadow-sm`}>
+                        {letter}
+                      </div>
+                    )}
+                    <span class="text-[11px] font-medium text-foreground text-center leading-tight">{skill.name}</span>
                   </div>
                 );
               })}
