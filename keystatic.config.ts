@@ -1,222 +1,169 @@
-import { config, collection, singleton, fields } from '@keystatic/core';
-import { block } from '@keystatic/core/content-components';
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
 
-// کامپوننت‌های تعاملی قابل‌درج داخل هر محتوای MDX (بلاگ، پروژه‌ها، سرویس‌ها، ریسرچ)
-// این‌ها دقیقاً با کامپوننت‌های واقعی سایت در src/components/mdx/ مطابقت دارن
-const mdxComponents = {
-  YouTube: block({
-    label: 'YouTube Video',
-    schema: {
-      id: fields.text({
-        label: 'Video ID',
-        description: 'قسمت بعد از v= توی لینک یوتیوب، مثلاً برای youtube.com/watch?v=dQw4w9WgXcQ مقدار dQw4w9WgXcQ است',
-      }),
-      title: fields.text({ label: 'Title (accessibility)', defaultValue: 'YouTube video' }),
-    },
-  }),
-  Video: block({
-    label: 'Video File (mp4/webm)',
-    schema: {
-      src: fields.url({ label: 'Video File URL' }),
-      poster: fields.url({ label: 'Poster Image URL (optional)' }),
-      caption: fields.text({ label: 'Caption (optional)' }),
-    },
-  }),
-  Embed: block({
-    label: 'Interactive Embed (demo / chart / other platform)',
-    schema: {
-      url: fields.url({
-        label: 'Embed URL',
-        description: 'لینک iframe-پذیر: CodePen, StackBlitz, Observable, Plotly Chart Studio, Google Maps و غیره',
-      }),
-      title: fields.text({ label: 'Title (accessibility)', defaultValue: 'Embedded content' }),
-      height: fields.integer({ label: 'Height (px)', defaultValue: 480 }),
-    },
-  }),
-};
+const researchItems = await getCollection('research');
+const allTags = [...new Set(researchItems.flatMap((r) => r.data.tags || []))].sort();
+---
 
-export default config({
-  storage: {
-    kind: 'cloud',
-  },
-  cloud: {
-    project: 'msb6/githubio',
-  },
-  collections: {
-    blog: collection({
-      label: 'Blog',
-      slugField: 'title',
-      path: 'src/content/blog/*',
-      format: { contentField: 'content' },
-      schema: {
-        title: fields.slug({ name: { label: 'Title' } }),
-        description: fields.text({ label: 'Description', multiline: true }),
-        category: fields.text({ label: 'Category', defaultValue: 'Technical' }),
-        date: fields.date({ label: 'Date' }),
-        draft: fields.checkbox({ label: 'Draft', defaultValue: false }),
-        tags: fields.array(fields.text({ label: 'Tag' }), { label: 'Tags' }),
-        image: fields.text({ label: 'Image Path', description: 'e.g. /assets/images/blog/cover.jpg' }),
-        content: fields.mdx({
-          label: 'Content',
-          options: {
-            image: {
-              directory: 'public/assets/images/blog',
-              publicPath: '/assets/images/blog/',
-            },
-          },
-          components: mdxComponents,
-        }),
-      },
-    }),
-    projects: collection({
-      label: 'Projects',
-      slugField: 'title',
-      path: 'src/content/projects/*',
-      format: { contentField: 'content' },
-      schema: {
-        title: fields.slug({ name: { label: 'Title' } }),
-        description: fields.text({ label: 'Description', multiline: true }),
-        category: fields.text({ label: 'Category' }),
-        tags: fields.array(fields.text({ label: 'Tag' }), { label: 'Tags' }),
-        year: fields.integer({ label: 'Year' }),
-        featured: fields.checkbox({ label: 'Featured', defaultValue: false }),
-        image: fields.text({ label: 'Image Path', description: 'e.g. /assets/images/projects/slope.jpg' }),
-        content: fields.mdx({
-          label: 'Content',
-          options: {
-            image: {
-              directory: 'public/assets/images/projects',
-              publicPath: '/assets/images/projects/',
-            },
-          },
-          components: mdxComponents,
-        }),
-      },
-    }),
-    services: collection({
-      label: 'Services',
-      slugField: 'title',
-      path: 'src/content/services/*',
-      format: { contentField: 'content' },
-      schema: {
-        title: fields.slug({ name: { label: 'Title' } }),
-        description: fields.text({ label: 'Description', multiline: true }),
-        tags: fields.array(fields.text({ label: 'Tag' }), { label: 'Tags' }),
-        order: fields.integer({ label: 'Order', defaultValue: 99 }),
-        content: fields.mdx({
-          label: 'Content',
-          options: {
-            image: {
-              directory: 'public/assets/images/services',
-              publicPath: '/assets/images/services/',
-            },
-          },
-          components: mdxComponents,
-        }),
-      },
-    }),
-    research: collection({
-      label: 'Research & Notes',
-      slugField: 'title',
-      path: 'src/content/research/*',
-      format: { contentField: 'content' },
-      schema: {
-        title: fields.slug({ name: { label: 'Title' } }),
-        description: fields.text({ label: 'Description', multiline: true }),
-        type: fields.select({
-          label: 'Type',
-          options: [
-            { label: 'Academic Paper / Thesis', value: 'paper' },
-            { label: 'Quarto Report', value: 'quarto' },
-          ],
-          defaultValue: 'paper',
-        }),
-        status: fields.text({ label: 'Status' }),
-        year: fields.integer({ label: 'Year' }),
-        link: fields.url({ label: 'Link' }),
-        tags: fields.array(fields.text({ label: 'Tag' }), { label: 'Tags' }),
-        content: fields.mdx({
-          label: 'Abstract / Main Text',
-          options: {
-            image: {
-              directory: 'public/assets/images/research',
-              publicPath: '/assets/images/research/',
-            },
-          },
-          components: mdxComponents,
-        }),
-      },
-    }),
-  },
-  singletons: {
-    settings: singleton({
-      label: 'Site Settings',
-      path: 'src/content/site/settings',
-      format: { data: 'json' },
-      schema: {
-        siteName: fields.text({ label: 'Site Name (e.g. Saeed)' }),
-        tagline: fields.text({ label: 'Footer Tagline', multiline: true }),
-        availabilityText: fields.text({ label: 'Availability Text' }),
-        email: fields.text({ label: 'Contact Email' }),
-        location: fields.text({ label: 'Location' }),
-        githubUrl: fields.url({ label: 'GitHub URL' }),
-        linkedinUrl: fields.url({ label: 'LinkedIn URL' }),
-        googleScholarUrl: fields.url({ label: 'Google Scholar URL (optional)' }),
-        heroBadge: fields.text({ label: 'Homepage Hero Badge' }),
-        heroHeadline: fields.text({ label: 'Homepage Hero Headline' }),
-        heroSubheadline: fields.text({ label: 'Homepage Hero Subheadline', multiline: true }),
-        ctaHeading: fields.text({ label: 'Homepage CTA Heading' }),
-        ctaText: fields.text({ label: 'Homepage CTA Text', multiline: true }),
-      },
-    }),
-    about: singleton({
-      label: 'About Page',
-      path: 'src/content/site/about',
-      format: { data: 'json' },
-      schema: {
-        introHeading: fields.text({ label: 'Intro Heading', defaultValue: 'About Me' }),
-        introText: fields.text({ label: 'Intro Text', multiline: true }),
-        education: fields.array(
-          fields.object({
-            degreeLabel: fields.text({ label: 'Degree Label', description: 'e.g. M.Sc. in Geotechnical Engineering' }),
-            title: fields.text({ label: 'Title' }),
-            description: fields.text({ label: 'Description', multiline: true }),
-            institution: fields.text({ label: 'Institution / Status' }),
-            current: fields.checkbox({ label: 'Currently In Progress', defaultValue: false }),
-          }),
-          {
-            label: 'Education Entries',
-            itemLabel: (props) => props.fields.title.value || 'Education entry',
-          }
-        ),
-        specializations: fields.array(
-          fields.object({
-            title: fields.text({ label: 'Title' }),
-            description: fields.text({ label: 'Description', multiline: true }),
-          }),
-          {
-            label: 'Core Specializations',
-            itemLabel: (props) => props.fields.title.value || 'Specialization',
-          }
-        ),
-      },
-    }),
-    techStack: singleton({
-      label: 'Tech Stack',
-      path: 'src/content/site/tech-stack',
-      format: { data: 'json' },
-      schema: {
-        categories: fields.array(
-          fields.object({
-            name: fields.text({ label: 'Category Name', description: 'e.g. AI & Machine Learning' }),
-            skills: fields.array(fields.text({ label: 'Skill' }), { label: 'Skills' }),
-          }),
-          {
-            label: 'Categories',
-            itemLabel: (props) => props.fields.name.value || 'Category',
-          }
-        ),
-      },
-    }),
-  },
-});
+<Layout title="Research | Saeed Babaee">
+  <div class="space-y-8">
+    <div class="space-y-2">
+      <h1 class="text-3xl font-bold tracking-tight">Research & Publications</h1>
+      <p class="text-muted-foreground">
+        Academic research, computational modeling, and published literature.
+      </p>
+    </div>
+
+    <div class="relative max-w-md">
+      <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z" />
+      </svg>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search research by title or description..."
+        class="w-full rounded-md border border-border bg-background py-2 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+      />
+    </div>
+
+    {allTags.length > 0 && (
+      <div class="flex flex-wrap items-center gap-2" id="tag-filters">
+        {allTags.map((tag) => (
+          <button
+            type="button"
+            data-tag={tag}
+            class="filter-btn inline-flex items-center rounded-md border border-border bg-background px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            {tag}
+          </button>
+        ))}
+        <button
+          type="button"
+          id="clear-filters"
+          class="hidden inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-primary hover:underline"
+        >
+          Clear filters
+        </button>
+      </div>
+    )}
+
+    <div class="space-y-4" id="research-list">
+      {researchItems.map((item) => (
+        <a
+          href={`/research/${item.id}`}
+          data-tags={(item.data.tags || []).join(',')}
+          data-search={`${item.data.title} ${item.data.description}`.toLowerCase()}
+          class="research-card group block rounded-lg border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5"
+        >
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+              {item.data.type || 'Scientific Publication'}
+            </span>
+            {item.data.year && (
+              <span class="text-xs text-muted-foreground">{item.data.year}</span>
+            )}
+          </div>
+
+          <h2 class="text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors">
+            {item.data.title}
+          </h2>
+
+          {item.data.authors && (
+            <p class="text-xs text-muted-foreground mt-1 italic">{item.data.authors}</p>
+          )}
+
+          <p class="text-sm text-muted-foreground mt-2 leading-relaxed">
+            {item.data.description}
+          </p>
+
+          {item.data.doi && (
+            <p class="text-xs text-muted-foreground mt-2">
+              DOI: {item.data.doi}
+            </p>
+          )}
+
+          {item.data.tags && item.data.tags.length > 0 && (
+            <div class="flex flex-wrap gap-1.5 mt-3">
+              {item.data.tags.map((tag) => (
+                <span class="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div class="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
+            <span class="text-xs text-muted-foreground">
+              {item.data.status || 'Peer-reviewed'}
+            </span>
+            <span class="text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+              Read details →
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <p id="no-results" class="hidden text-center text-sm text-muted-foreground py-8">
+      No research items match your search or filters.
+    </p>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
+    const tagButtons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const clearBtn = document.getElementById('clear-filters');
+    const cards = document.querySelectorAll<HTMLAnchorElement>('.research-card');
+    const noResults = document.getElementById('no-results');
+
+    const activeTags = new Set<string>();
+
+    function applyFilters() {
+      const query = (searchInput?.value || '').trim().toLowerCase();
+      let visible = 0;
+
+      cards.forEach((card) => {
+        const cardTags = (card.getAttribute('data-tags') || '').split(',').filter(Boolean);
+        const cardSearch = card.getAttribute('data-search') || '';
+
+        const matchesTags = activeTags.size === 0 || cardTags.some((t) => activeTags.has(t));
+        const matchesSearch = query === '' || cardSearch.includes(query);
+        const show = matchesTags && matchesSearch;
+
+        card.classList.toggle('hidden', !show);
+        if (show) visible++;
+      });
+
+      noResults?.classList.toggle('hidden', visible > 0);
+      clearBtn?.classList.toggle('hidden', activeTags.size === 0);
+    }
+
+    tagButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const tag = btn.getAttribute('data-tag') || '';
+        if (activeTags.has(tag)) {
+          activeTags.delete(tag);
+          btn.classList.remove('bg-primary', 'text-primary-foreground', 'border-primary');
+          btn.classList.add('bg-background', 'text-muted-foreground', 'border-border');
+        } else {
+          activeTags.add(tag);
+          btn.classList.add('bg-primary', 'text-primary-foreground', 'border-primary');
+          btn.classList.remove('bg-background', 'text-muted-foreground', 'border-border');
+        }
+        applyFilters();
+      });
+    });
+
+    clearBtn?.addEventListener('click', () => {
+      activeTags.clear();
+      tagButtons.forEach((b) => {
+        b.classList.remove('bg-primary', 'text-primary-foreground', 'border-primary');
+        b.classList.add('bg-background', 'text-muted-foreground', 'border-border');
+      });
+      applyFilters();
+    });
+
+    searchInput?.addEventListener('input', applyFilters);
+  </script>
+</Layout>
