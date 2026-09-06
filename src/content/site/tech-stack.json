@@ -2,15 +2,33 @@
   "categories": [
     {
       "name": "Engineering & Simulation",
-      "skills": ["PLAXIS", "Python", "MATLAB", "GeoStudio", "FEA"]
+      "skills": [
+        { "name": "PLAXIS" },
+        { "name": "Python", "icon": "py" },
+        { "name": "MATLAB", "icon": "matlab" },
+        { "name": "GeoStudio" },
+        { "name": "FEA" }
+      ]
     },
     {
       "name": "AI & Machine Learning",
-      "skills": ["PyTorch", "TensorFlow", "PINNs", "Scikit-learn", "NumPy"]
+      "skills": [
+        { "name": "PyTorch", "icon": "pytorch" },
+        { "name": "TensorFlow", "icon": "tensorflow" },
+        { "name": "PINNs" },
+        { "name": "Scikit-learn", "icon": "sklearn" },
+        { "name": "NumPy" }
+      ]
     },
     {
       "name": "Web & Development",
-      "skills": ["Astro", "TypeScript", "Tailwind", "Git", "FastAPI"]
+      "skills": [
+        { "name": "Astro", "icon": "astro" },
+        { "name": "TypeScript", "icon": "ts" },
+        { "name": "Tailwind", "icon": "tailwind" },
+        { "name": "Git", "icon": "git" },
+        { "name": "FastAPI", "icon": "fastapi" }
+      ]
     }
   ]
 }
