@@ -99,7 +99,12 @@ const techStack = defineCollection({
     categories: z.array(
       z.object({
         name: z.string(),
-        skills: z.array(z.string()),
+        skills: z.array(
+          z.object({
+            name: z.string(),
+            icon: z.string().optional(),
+          })
+        ),
       })
     ),
   }),
