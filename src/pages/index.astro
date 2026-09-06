@@ -154,14 +154,12 @@ const techStack = techStackEntry!.data;
                 return (
                   <div class="flex flex-col items-center gap-1.5">
                     {skill.icon ? (
-                      <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-muted/60 p-1.5">
-                        <img
-                          src={`https://skillicons.dev/icons?i=${skill.icon}`}
-                          alt={skill.name}
-                          class="h-full w-full object-contain"
-                          loading="lazy"
-                        />
-                      </div>
+                      <img
+                        src={`https://skillicons.dev/icons?i=${skill.icon}`}
+                        alt={skill.name}
+                        class="h-12 w-12 rounded-lg object-contain"
+                        loading="lazy"
+                      />
                     ) : (
                       <div class={`flex h-12 w-12 items-center justify-center rounded-lg ${color} text-white text-sm font-bold shadow-sm`}>
                         {letter}
