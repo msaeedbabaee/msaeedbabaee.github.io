@@ -51,71 +51,67 @@ const allTags = [...new Set(researchItems.flatMap((r) => r.data.tags || []))].so
     )}
 
     <div class="space-y-4" id="research-list">
-      {researchItems.length > 0 ? (
-        researchItems.map((item) => (
-          <a
-            href={`/research/${item.id}`}
-            data-tags={(item.data.tags || []).join(',')}
-            data-search={`${item.data.title} ${item.data.description}`.toLowerCase()}
-            class="research-card group block rounded-lg border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5"
-          >
-            <div class="flex flex-wrap items-center gap-2 mb-2">
-              <span class="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                {item.data.type || 'Scientific Publication'}
-              </span>
-              {item.data.year && (
-                <span class="text-xs text-muted-foreground">{item.data.year}</span>
-              )}
-            </div>
-
-            <h2 class="text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors">
-              {item.data.title}
-            </h2>
-
-            <p class="text-sm text-muted-foreground mt-2 leading-relaxed">
-              {item.data.description}
-            </p>
-
-            {item.data.tags && item.data.tags.length > 0 && (
-              <div class="flex flex-wrap gap-1.5 mt-3">
-                {item.data.tags.map((tag) => (
-                  <span class="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            <div class="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
-              <span class="text-xs text-muted-foreground">
-                {item.data.status || 'Peer-reviewed'}
-              </span>
-              <span class="text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                Read details →
-              </span>
-            </div>
-          </a>
-        ))
-      ) : (
-        <div class="rounded-lg border border-border bg-card p-5 shadow-sm">
+      {researchItems.map((item) => (
+        <a
+          href={`/research/${item.id}`}
+          data-tags={(item.data.tags || []).join(',')}
+          data-search={`${item.data.title} ${item.data.description}`.toLowerCase()}
+          class="research-card group block rounded-lg border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5"
+        >
           <div class="flex flex-wrap items-center gap-2 mb-2">
             <span class="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-              Scientific Publication
+              {item.data.type || 'Scientific Publication'}
+            </span>
+            {item.data.year && (
+              <span class="text-xs text-muted-foreground">{item.data.year}</span>
+            )}
+          </div>
+
+          <h2 class="text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors">
+            {item.data.title}
+          </h2>
+
+          {item.data.authors && (
+            <p class="text-xs text-muted-foreground mt-1 italic">{item.data.authors}</p>
+          )}
+
+          <p class="text-sm text-muted-foreground mt-2 leading-relaxed">
+            {item.data.description}
+          </p>
+
+          {item.data.doi && (
+            <p class="text-xs text-muted-foreground mt-2">
+              DOI: {item.data.doi}
+            </p>
+          )}
+
+          {item.data.tags && item.data.tags.length > 0 && (
+            <div class="flex flex-wrap gap-1.5 mt-3">
+              {item.data.tags.map((tag) => (
+                <span class="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div class="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
+            <span class="text-xs text-muted-foreground">
+              {item.data.status || 'Peer-reviewed'}
+            </span>
+            <span class="text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+              Read details →
             </span>
           </div>
-          <h2 class="text-lg font-semibold text-card-foreground">
-            Physics-Informed Neural Networks in Geomechanics
-          </h2>
-          <p class="text-sm text-muted-foreground mt-2 leading-relaxed">
-            A research review on application of PINNs for solving partial differential equations in soil mechanics.
-          </p>
-          <div class="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
-            <span class="text-xs text-muted-foreground">Peer-reviewed</span>
-            <span class="text-sm text-muted-foreground">Coming soon</span>
-          </div>
-        </div>
-      )}
+        </a>
+      ))}
     </div>
+
+    {researchItems.length === 0 && (
+      <p class="text-center text-sm text-muted-foreground py-8">
+        No research items published yet.
+      </p>
+    )}
 
     <p id="no-results" class="hidden text-center text-sm text-muted-foreground py-8">
       No research items match your search or filters.
