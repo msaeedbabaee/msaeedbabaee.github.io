@@ -4,9 +4,11 @@
 import YouTube from './YouTube.astro';
 import Video from './Video.astro';
 import Embed from './Embed.astro';
+import DemoLink from './DemoLink.astro';
 
 export const mdxComponents = {
   YouTube,
   Video,
   Embed,
+  DemoLink,
 };
