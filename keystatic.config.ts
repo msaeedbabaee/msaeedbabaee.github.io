@@ -63,7 +63,12 @@ export default config({
         date: fields.date({ label: 'Date' }),
         draft: fields.checkbox({ label: 'Draft', defaultValue: false }),
         tags: fields.array(fields.text({ label: 'Tag' }), { label: 'Tags' }),
-        image: fields.text({ label: 'Image Path', description: 'e.g. /assets/images/blog/cover.jpg' }),
+        image: fields.image({
+          label: 'Cover Image',
+          description: 'عکس جلد پست را اینجا آپلود کن',
+          directory: 'public/assets/images/blog',
+          publicPath: '/assets/images/blog/',
+        }),
         content: fields.mdx({
           label: 'Content',
           options: {
@@ -88,7 +93,12 @@ export default config({
         tags: fields.array(fields.text({ label: 'Tag' }), { label: 'Tags' }),
         year: fields.integer({ label: 'Year' }),
         featured: fields.checkbox({ label: 'Featured', defaultValue: false }),
-        image: fields.text({ label: 'Image Path', description: 'e.g. /assets/images/projects/slope.jpg' }),
+        image: fields.image({
+          label: 'Cover Image',
+          description: 'عکس جلد پروژه را اینجا آپلود کن',
+          directory: 'public/assets/images/projects',
+          publicPath: '/assets/images/projects/',
+        }),
         content: fields.mdx({
           label: 'Content',
           options: {
