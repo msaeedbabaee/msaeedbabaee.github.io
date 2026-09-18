@@ -33,6 +33,14 @@ const mdxComponents = {
       height: fields.integer({ label: 'Height (px)', defaultValue: 480 }),
     },
   }),
+  DemoLink: block({
+    label: 'Demo Link Button (for Streamlit, Colab, or anything that fails inside an iframe)',
+    schema: {
+      url: fields.url({ label: 'Demo URL' }),
+      label: fields.text({ label: 'Button Label', defaultValue: 'Open Live Demo' }),
+      description: fields.text({ label: 'Description (optional)' }),
+    },
+  }),
 };
 
 export default config({
