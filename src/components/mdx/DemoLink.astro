@@ -1,0 +1,25 @@
+---
+// دکمهٔ/کارت «مشاهدهٔ دمو» که توی تب جدید باز میشه.
+// برای دموهایی مثل Streamlit، Google Colab یا هر برنامه‌ای که iframe embed
+// روش (به‌خاطر X-Frame-Options یا مسدودشدن third-party cookies) قابل‌اعتماد نیست.
+interface Props {
+  url: string;
+  label?: string;
+  description?: string;
+}
+const { url, label = 'Open Live Demo', description } = Astro.props;
+---
+<a
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="not-prose my-6 flex items-center justify-between gap-4 rounded-lg border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5 no-underline"
+>
+  <div>
+    <div class="font-semibold text-card-foreground">{label}</div>
+    {description && <p class="text-sm text-muted-foreground mt-1">{description}</p>}
+  </div>
+  <span class="shrink-0 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow">
+    Open ↗
+  </span>
+</a>
