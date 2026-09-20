@@ -1,17 +1,15 @@
 {
   "maintenance": {
-    "enabled": false,
+    "enabled": true,
     "message": "Coming Soon"
   },
   "announcement": {
-    "enabled": false,
-    "text": "",
-    "url": ""
+    "enabled": false
   },
   "pages": {
     "blog": true,
     "projects": true,
-    "research": true,
+    "research": false,
     "services": true,
     "about": true
   },
