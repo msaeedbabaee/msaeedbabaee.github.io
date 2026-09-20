@@ -1,0 +1,28 @@
+{
+  "maintenance": {
+    "enabled": false,
+    "message": "Coming Soon"
+  },
+  "announcement": {
+    "enabled": false,
+    "text": "",
+    "url": ""
+  },
+  "pages": {
+    "blog": true,
+    "projects": true,
+    "research": true,
+    "services": true,
+    "about": true
+  },
+  "home": {
+    "hero": true,
+    "stats": true,
+    "featuredProjects": true,
+    "latestPosts": true,
+    "services": true,
+    "techStack": true,
+    "cta": true
+  },
+  "nav": []
+}
