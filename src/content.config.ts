@@ -25,6 +25,16 @@ const seo = z
   .optional();
 
 /* ── content collections ───────────────────────────────────── */
+
+// The single source of truth for every tag (src/content/tags/*.json).
+// Blog/Projects/Research/Services store an array of these tag IDs.
+const tags = defineCollection({
+  loader: glob({ pattern: '*.json', base: './src/content/tags' }),
+  schema: z.object({
+    name: z.string(),
+  }),
+});
+
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
@@ -109,9 +119,9 @@ const siteControl = defineCollection({
     maintenance: z
       .object({
         enabled: z.boolean().default(false),
-        message: z.string().default('سایت در حال به‌روزرسانی است. به‌زودی برمی‌گردیم.'),
+        message: z.string().default('The site is being updated. Check back soon.'),
       })
-      .default({ enabled: false, message: 'سایت در حال به‌روزرسانی است. به‌زودی برمی‌گردیم.' }),
+      .default({ enabled: false, message: 'The site is being updated. Check back soon.' }),
     announcement: z
       .object({
         enabled: z.boolean().default(false),
@@ -237,6 +247,7 @@ const techStack = defineCollection({
 });
 
 export const collections = {
+  tags,
   blog,
   projects,
   research,

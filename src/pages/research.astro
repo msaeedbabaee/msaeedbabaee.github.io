@@ -1,9 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { getTagIndex, resolveTags, collectTags } from '../utils/tags';
 
 const researchItems = await getCollection('research');
-const allTags = [...new Set(researchItems.flatMap((r) => r.data.tags || []))].sort();
+const tagIndex = await getTagIndex();
+const researchItemsWithTags = researchItems.map((entry) => ({
+  ...entry,
+  resolvedTags: resolveTags(entry.data.tags, tagIndex),
+}));
+const allTags = collectTags(researchItemsWithTags.map((e) => e.resolvedTags));
 ---
 
 <Layout title="Research | Saeed Babaee">
@@ -32,10 +38,10 @@ const allTags = [...new Set(researchItems.flatMap((r) => r.data.tags || []))].so
         {allTags.map((tag) => (
           <button
             type="button"
-            data-tag={tag}
+            data-tag={tag.id}
             class="filter-btn inline-flex items-center rounded-md border border-border bg-background px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
           >
-            {tag}
+            {tag.label}
           </button>
         ))}
         <button
@@ -49,10 +55,10 @@ const allTags = [...new Set(researchItems.flatMap((r) => r.data.tags || []))].so
     )}
 
     <div class="space-y-4" id="research-list">
-      {researchItems.map((item) => (
+      {researchItemsWithTags.map(({ resolvedTags, ...item }) => (
         <a
           href={`/research/${item.id}`}
-          data-tags={(item.data.tags || []).join(',')}
+          data-tags={resolvedTags.map((t) => t.id).join(',')}
           data-search={`${item.data.title} ${item.data.description}`.toLowerCase()}
           class="research-card group block rounded-lg border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5"
         >
@@ -83,11 +89,11 @@ const allTags = [...new Set(researchItems.flatMap((r) => r.data.tags || []))].so
             </p>
           )}
 
-          {item.data.tags && item.data.tags.length > 0 && (
+          {resolvedTags.length > 0 && (
             <div class="flex flex-wrap gap-1.5 mt-3">
-              {item.data.tags.map((tag) => (
+              {resolvedTags.map((tag) => (
                 <span class="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-                  {tag}
+                  {tag.label}
                 </span>
               ))}
             </div>
