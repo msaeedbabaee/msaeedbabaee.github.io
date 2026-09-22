@@ -1,9 +1,15 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { getTagIndex, resolveTags, collectTags } from '../../utils/tags';
 
 const projects = await getCollection('projects');
-const allTags = [...new Set(projects.flatMap((p) => p.data.tags || []))].sort();
+const tagIndex = await getTagIndex();
+const projectsWithTags = projects.map((entry) => ({
+  ...entry,
+  resolvedTags: resolveTags(entry.data.tags, tagIndex),
+}));
+const allTags = collectTags(projectsWithTags.map((e) => e.resolvedTags));
 ---
 
 <Layout title="Projects | Saeed Babaee">
@@ -32,10 +38,10 @@ const allTags = [...new Set(projects.flatMap((p) => p.data.tags || []))].sort();
         {allTags.map((tag) => (
           <button
             type="button"
-            data-tag={tag}
+            data-tag={tag.id}
             class="filter-btn inline-flex items-center rounded-md border border-border bg-background px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
           >
-            {tag}
+            {tag.label}
           </button>
         ))}
         <button
@@ -49,10 +55,10 @@ const allTags = [...new Set(projects.flatMap((p) => p.data.tags || []))].sort();
     )}
 
     <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" id="projects-grid">
-      {projects.map((project) => (
+      {projectsWithTags.map(({ resolvedTags, ...project }) => (
         <a
           href={`/projects/${project.id}`}
-          data-tags={(project.data.tags || []).join(',')}
+          data-tags={resolvedTags.map((t) => t.id).join(',')}
           data-search={`${project.data.title} ${project.data.description}`.toLowerCase()}
           class="project-card group block overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5"
         >
@@ -91,11 +97,11 @@ const allTags = [...new Set(projects.flatMap((p) => p.data.tags || []))].sort();
               {project.data.description}
             </p>
 
-            {project.data.tags && project.data.tags.length > 0 && (
+            {resolvedTags.length > 0 && (
               <div class="flex flex-wrap gap-1.5 mt-4 pt-3 border-t border-border/50">
-                {project.data.tags.map((tag) => (
+                {resolvedTags.map((tag) => (
                   <span class="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-                    {tag}
+                    {tag.label}
                   </span>
                 ))}
               </div>

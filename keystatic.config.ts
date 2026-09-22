@@ -10,7 +10,8 @@ const mdxComponents = {
     schema: {
       id: fields.text({
         label: 'Video ID',
-        description: 'قسمت بعد از v= توی لینک یوتیوب، مثلاً برای youtube.com/watch?v=dQw4w9WgXcQ مقدار dQw4w9WgXcQ است',
+        description:
+          'The part after v= in the YouTube link — e.g. for youtube.com/watch?v=dQw4w9WgXcQ the value is dQw4w9WgXcQ',
         validation: { isRequired: true },
       }),
       title: fields.text({ label: 'Title (accessibility)', defaultValue: 'YouTube video' }),
@@ -29,7 +30,8 @@ const mdxComponents = {
     schema: {
       url: fields.url({
         label: 'Embed URL',
-        description: 'لینک iframe-پذیر: CodePen, StackBlitz, Observable, Plotly Chart Studio, Google Maps و غیره',
+        description:
+          'Any iframe-embeddable link: CodePen, StackBlitz, Observable, Plotly Chart Studio, Google Maps, etc.',
         validation: { isRequired: true },
       }),
       title: fields.text({ label: 'Title (accessibility)', defaultValue: 'Embedded content' }),
@@ -57,31 +59,54 @@ const titleField = () =>
 const descriptionField = () =>
   fields.text({
     label: 'Description',
-    description: 'خلاصهٔ کوتاه؛ برای لیست‌ها و meta description (حداکثر ۲۰۰ کاراکتر، ایده‌آل ۱۲۰–۱۶۰)',
+    description: 'Short summary used in lists and as the meta description (max 200 characters, ideally 120–160)',
     multiline: true,
     validation: { isRequired: true, length: { max: 200 } },
   });
 
+/**
+ * Tags are picked from the Tags collection, never typed free-hand.
+ * This is what prevents duplicate tags such as "Site Investigations" and
+ * " Site Investigations" (leading space) or "site investigations" (different
+ * case) from ever existing side by side — every entry points at the same
+ * tag record, so there is only ever one canonical spelling per tag.
+ */
 const tagsField = () =>
-  fields.array(fields.text({ label: 'Tag', validation: { isRequired: true } }), {
-    label: 'Tags',
-    description: 'حداکثر ۸ تگ؛ املای یکسان (همیشه «Machine Learning»، نه «ML»)',
-    itemLabel: (props) => props.value || 'Tag',
-    validation: { length: { max: 8 } },
-  });
+  fields.array(
+    fields.relationship({
+      label: 'Tag',
+      collection: 'tags',
+      validation: { isRequired: true },
+    }),
+    {
+      label: 'Tags',
+      description:
+        'Pick from existing tags. Need a new one? Open the "Tags" collection in the sidebar, add it there once, then come back and select it here — that way the same tag is never created twice.',
+      itemLabel: (props) => props.value || 'Tag',
+      validation: { length: { max: 8 } },
+    }
+  );
 
 const yearField = () => fields.integer({ label: 'Year', validation: { min: 1990, max: 2100 } });
 
+/**
+ * Cover image. Keystatic Cloud stores uploads for a collection's image field
+ * under `${directory}/{entry-slug}/...`, using the entry's own slug — so as
+ * long as the entry's Title (slug) has no stray spaces/mixed case, the
+ * uploaded file's folder will be clean automatically. See "USCS Soil
+ * Classification Tool" migration note in the setup guide for the one legacy
+ * entry that predates this and still needs a manual rename.
+ */
 const coverImage = (dir: string) =>
   fields.image({
     label: 'Cover Image',
-    description: 'اختیاری. عکس جلد (ترجیحاً عرض ~۱۶۰۰px، WebP/JPG)',
+    description: 'Optional. Recommended width ~1600px, WebP or JPG under 300KB.',
     directory: `public/assets/images/${dir}`,
     publicPath: `/assets/images/${dir}/`,
   });
 
 const coverAlt = () =>
-  fields.text({ label: 'Cover Image Alt Text', description: 'توضیح کوتاه تصویر برای دسترس‌پذیری و سئو' });
+  fields.text({ label: 'Cover Image Alt Text', description: 'Short description of the image, for accessibility and SEO' });
 
 const mdxContent = (dir: string, label = 'Content') =>
   fields.mdx({
@@ -94,17 +119,17 @@ const mdxContent = (dir: string, label = 'Content') =>
 const visibilityFields = () => ({
   draft: fields.checkbox({
     label: 'Draft',
-    description: 'پیش‌نویس: اصلاً در سایت ساخته نمی‌شود',
+    description: 'Draft entries are never built into the live site.',
     defaultValue: false,
   }),
   unlisted: fields.checkbox({
     label: 'Unlisted',
-    description: 'با لینک مستقیم باز می‌شود ولی در لیست‌ها و sitemap نمی‌آید',
+    description: 'Reachable by direct link, but excluded from lists, tag filters and the sitemap.',
     defaultValue: false,
   }),
   publishAt: fields.date({
     label: 'Publish On (optional)',
-    description: 'تا این تاریخ منتشر نمی‌شود (نیاز به build زمان‌بندی‌شده در GitHub Actions)',
+    description: 'Hide this entry until the given date (requires a scheduled build in GitHub Actions).',
   }),
 });
 
@@ -114,18 +139,18 @@ const seoField = () =>
     {
       title: fields.text({
         label: 'SEO Title',
-        description: 'خالی = همان عنوان',
+        description: 'Leave blank to reuse the entry title.',
         validation: { length: { max: 70 } },
       }),
       description: fields.text({
         label: 'SEO Description',
-        description: 'خالی = همان Description',
+        description: 'Leave blank to reuse the entry description.',
         multiline: true,
         validation: { length: { max: 170 } },
       }),
       ogImage: fields.image({
         label: 'Social Share Image',
-        description: 'ابعاد پیشنهادی ۱۲۰۰×۶۳۰',
+        description: 'Recommended size 1200×630.',
         directory: 'public/assets/images/seo',
         publicPath: '/assets/images/seo/',
       }),
@@ -147,11 +172,31 @@ export default config({
     brand: { name: 'Saeed — Content' },
     navigation: {
       Content: ['blog', 'projects', 'research', 'services'],
+      Taxonomy: ['tags'],
       'Site Control': ['siteControl', 'settings', 'about', 'techStack'],
     },
   },
 
   collections: {
+    /* ── NEW: the single source of truth for every tag on the site ── */
+    tags: collection({
+      label: 'Tags',
+      entryLayout: 'form',
+      slugField: 'name',
+      path: 'src/content/tags/*',
+      format: { data: 'json' },
+      schema: {
+        name: fields.slug({
+          name: {
+            label: 'Tag Name',
+            description:
+              'The exact label shown to visitors, e.g. "Site Investigations". Keystatic turns this into a unique ID automatically, so it is impossible to save two tags that produce the same ID.',
+            validation: { isRequired: true, length: { min: 2, max: 40 } },
+          },
+        }),
+      },
+    }),
+
     blog: collection({
       label: 'Blog',
       slugField: 'title',
@@ -203,7 +248,7 @@ export default config({
           }),
           {
             label: 'Gallery (optional)',
-            description: 'چند تصویر برای صفحهٔ پروژه؛ با کشیدن و رها کردن جابه‌جا کنید',
+            description: 'Extra images for the project page. Drag to reorder.',
             itemLabel: (props) => props.fields.caption.value || props.fields.alt.value || 'Image',
           }
         ),
@@ -224,7 +269,7 @@ export default config({
         tags: tagsField(),
         order: fields.integer({
           label: 'Order',
-          description: 'عدد کمتر = بالاتر در لیست',
+          description: 'Lower number = higher up the list.',
           defaultValue: 99,
           validation: { min: 1, max: 99 },
         }),
@@ -261,7 +306,7 @@ export default config({
           validation: {
             pattern: {
               regex: /^(10\.\d{4,9}\/\S+)?$/,
-              message: 'DOI باید با 10. شروع شود و بدون https://doi.org/ باشد',
+              message: 'DOI must start with 10. and must not include https://doi.org/',
             },
           },
         }),
@@ -274,7 +319,7 @@ export default config({
   },
 
   singletons: {
-    /* ── NEW: the "control room" — show/hide anything without touching code ── */
+    /* ── the "control room" — show/hide anything without touching code ── */
     siteControl: singleton({
       label: 'Visibility & Navigation',
       path: 'src/content/site/site-control',
@@ -284,13 +329,13 @@ export default config({
           {
             enabled: fields.checkbox({
               label: 'Maintenance Mode',
-              description: 'فعال = به‌جای سایت فقط پیام زیر نمایش داده می‌شود',
+              description: 'When on, the site shows only the message below instead of its normal pages.',
               defaultValue: false,
             }),
             message: fields.text({
               label: 'Message',
               multiline: true,
-              defaultValue: 'سایت در حال به‌روزرسانی است. به‌زودی برمی‌گردیم.',
+              defaultValue: 'The site is being updated. Check back soon.',
             }),
           },
           { label: 'Maintenance Mode' }
@@ -315,7 +360,7 @@ export default config({
           },
           {
             label: 'Pages — show / hide',
-            description: 'غیرفعال = صفحه ساخته نمی‌شود و از منو و sitemap حذف می‌شود',
+            description: 'Turning a page off removes it from the build, the menu and the sitemap.',
           }
         ),
 
@@ -337,10 +382,10 @@ export default config({
             label: fields.text({ label: 'Label', validation: { isRequired: true } }),
             href: fields.text({
               label: 'Link',
-              description: 'مثلاً /blog یا https://…',
+              description: 'e.g. /blog or https://…',
               validation: {
                 isRequired: true,
-                pattern: { regex: /^(\/|https?:\/\/)/, message: 'با / یا https:// شروع شود' },
+                pattern: { regex: /^(\/|https?:\/\/)/, message: 'Must start with / or https://' },
               },
             }),
             visible: fields.checkbox({ label: 'Visible', defaultValue: true }),
@@ -348,9 +393,9 @@ export default config({
           }),
           {
             label: 'Header Menu (optional)',
-            description: 'خالی = منوی پیش‌فرض کد. ترتیب را با کشیدن و رها کردن عوض کنید.',
+            description: 'Leave empty to use the default menu from the code. Drag to reorder.',
             itemLabel: (props) =>
-              `${props.fields.visible.value ? '' : '🚫 '}${props.fields.label.value || 'Menu item'}`,
+              `${props.fields.visible.value ? '' : '(hidden) '}${props.fields.label.value || 'Menu item'}`,
           }
         ),
       },
@@ -367,7 +412,7 @@ export default config({
         email: fields.text({
           label: 'Contact Email',
           validation: {
-            pattern: { regex: /^([^\s@]+@[^\s@]+\.[^\s@]+)?$/, message: 'ایمیل معتبر وارد کنید' },
+            pattern: { regex: /^([^\s@]+@[^\s@]+\.[^\s@]+)?$/, message: 'Enter a valid email address' },
           },
         }),
         location: fields.text({ label: 'Location' }),
@@ -385,7 +430,7 @@ export default config({
           }),
           {
             label: 'Homepage Stats Row (optional)',
-            description: 'چند عدد کوتاه برای نمایش زیر Hero',
+            description: 'A few short numbers shown below the Hero.',
             itemLabel: (props) =>
               [props.fields.value.value, props.fields.label.value].filter(Boolean).join(' ') || 'Stat',
             validation: { length: { max: 4 } },
@@ -454,9 +499,9 @@ export default config({
                 icon: fields.text({
                   label: 'Icon (optional)',
                   description:
-                    'اسلاگ آیکون از skillicons.dev — مثلاً برای پایتون py، برای React react. لیست کامل: https://github.com/tandpfun/skill-icons#icons-list — اگر خالی بگذارید یا در لیست نباشد، آواتار حرفی خودکار ساخته می‌شود.',
+                    'skillicons.dev slug — e.g. py for Python, react for React. Full list: https://github.com/tandpfun/skill-icons#icons-list — leave blank, or use one not on the list, to fall back to an automatic letter avatar.',
                   validation: {
-                    pattern: { regex: /^[a-z0-9-]*$/, message: 'فقط حروف کوچک انگلیسی، عدد و خط تیره' },
+                    pattern: { regex: /^[a-z0-9-]*$/, message: 'Lowercase letters, numbers and hyphens only' },
                   },
                 }),
               }),

@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 import { mdxComponents } from '../../components/mdx';
+import { getTagIndex, resolveTags } from '../../utils/tags';
 
 export async function getStaticPaths() {
   const services = await getCollection('services');
@@ -13,6 +14,8 @@ export async function getStaticPaths() {
 
 const { service } = Astro.props;
 const { Content } = await render(service);
+const tagIndex = await getTagIndex();
+const tags = resolveTags(service.data.tags, tagIndex);
 ---
 
 <Layout title={`${service.data.title} | Services`} description={service.data.description}>
@@ -29,11 +32,11 @@ const { Content } = await render(service);
       <p class="text-lg text-muted-foreground leading-relaxed">
         {service.data.description}
       </p>
-      {service.data.tags && service.data.tags.length > 0 && (
+      {tags.length > 0 && (
         <div class="flex flex-wrap gap-1.5">
-          {service.data.tags.map((tag: string) => (
+          {tags.map((tag) => (
             <span class="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-              {tag}
+              {tag.label}
             </span>
           ))}
         </div>
