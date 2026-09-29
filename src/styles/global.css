@@ -92,3 +92,16 @@
     text-wrap: balance;
   }
 }
+/* ── Math & wide content inside blog/project/research prose ─────────────── */
+.math-block {
+  overflow-x: auto;
+  overflow-y: hidden;
+  text-align: center;
+}
+.math-block .katex-display { margin: 0; }
+.prose .katex-display { overflow-x: auto; overflow-y: hidden; }
+.prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
