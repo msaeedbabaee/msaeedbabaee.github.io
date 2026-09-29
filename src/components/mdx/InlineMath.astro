@@ -1,0 +1,17 @@
+---
+// Inline formula inside a sentence.  Keystatic → "Inline Math" → <InlineMath tex="P_f" />
+import katex from 'katex';
+import { normaliseTex } from '../../plugins/math-repair.mjs';
+
+interface Props {
+  tex: string;
+}
+const { tex } = Astro.props;
+const html = katex.renderToString(normaliseTex(tex), {
+  displayMode: false,
+  throwOnError: false,
+  strict: 'ignore',
+  output: 'htmlAndMathml',
+});
+---
+<span class="math-inline" set:html={html} />

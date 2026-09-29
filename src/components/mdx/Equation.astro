@@ -1,0 +1,18 @@
+---
+// Display (block) equation.  Keystatic → "Equation" block  →  <Equation tex="\frac{a}{b}" />
+// The LaTeX lives in an attribute, so the rich-text editor can never escape it.
+import katex from 'katex';
+import { normaliseTex } from '../../plugins/math-repair.mjs';
+
+interface Props {
+  tex: string;
+}
+const { tex } = Astro.props;
+const html = katex.renderToString(normaliseTex(tex), {
+  displayMode: true,
+  throwOnError: false,
+  strict: 'ignore',
+  output: 'htmlAndMathml',
+});
+---
+<div class="math-block not-prose my-6" set:html={html} />
