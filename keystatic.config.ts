@@ -1,5 +1,6 @@
 import { config, collection, singleton, fields } from '@keystatic/core';
 import { block } from '@keystatic/core/content-components';
+import { mathComponents } from './src/keystatic/math-components';
 
 /* ────────────────────────────────────────────────────────────────
    1) MDX components  (must match src/components/mdx/*)
@@ -38,6 +39,9 @@ const mdxComponents = {
       height: fields.integer({ label: 'Height (px)', defaultValue: 480, validation: { min: 200, max: 1200 } }),
     },
   }),
+  // Math: LaTeX is stored in an attribute, so the editor can never mangle it.
+  // (Renders through src/components/mdx/Equation.astro and InlineMath.astro)
+  ...mathComponents,
   DemoLink: block({
     label: 'Demo Link Button (for Streamlit, Colab, or anything that fails inside an iframe)',
     schema: {
@@ -53,7 +57,15 @@ const mdxComponents = {
    ──────────────────────────────────────────────────────────────── */
 const titleField = () =>
   fields.slug({
-    name: { label: 'Title', validation: { isRequired: true, length: { min: 3, max: 100 } } },
+    name: {
+      label: 'Title',
+      description: 'Plain text only — do not start with "#". The page prints it as the main heading.',
+      validation: {
+        isRequired: true,
+        length: { min: 3, max: 100 },
+        pattern: { regex: /^[^#\s]/, message: 'Title must not start with "#" or a space' },
+      },
+    },
   });
 
 const descriptionField = () =>
@@ -61,7 +73,11 @@ const descriptionField = () =>
     label: 'Description',
     description: 'Short summary used in lists and as the meta description (max 200 characters, ideally 120–160)',
     multiline: true,
-    validation: { isRequired: true, length: { max: 200 } },
+    validation: {
+      isRequired: true,
+      length: { max: 200 },
+      pattern: { regex: /^[^#\s]/, message: 'Description must not start with "#" or a space' },
+    },
   });
 
 /**
@@ -108,10 +124,24 @@ const coverImage = (dir: string) =>
 const coverAlt = () =>
   fields.text({ label: 'Cover Image Alt Text', description: 'Short description of the image, for accessibility and SEO' });
 
+const MATH_HELP =
+  'Math: do NOT type $…$ or $$…$$ here — the editor would escape the underscores and braces. ' +
+  'Use the "+" menu → "Math Equation (LaTeX)" for a centered formula, and "Inline Math (LaTeX)" ' +
+  'for a formula inside a sentence. Type plain LaTeX (e.g. \\frac{a}{b}, x_1) and a live preview appears. ' +
+  'Start headings at level 2 (the page title is already the H1). Tables: use the table button; keep each cell to one line.';
+
 const mdxContent = (dir: string, label = 'Content') =>
   fields.mdx({
     label,
-    options: { image: { directory: `public/assets/images/${dir}`, publicPath: `/assets/images/${dir}/` } },
+    description: MATH_HELP,
+    options: {
+      heading: [2, 3, 4], // no H1 in the body — the page already prints the title as <h1>
+      table: true,
+      codeBlock: true,
+      blockquote: true,
+      divider: true,
+      image: { directory: `public/assets/images/${dir}`, publicPath: `/assets/images/${dir}/` },
+    },
     components: mdxComponents,
   });
 
