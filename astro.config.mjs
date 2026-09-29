@@ -5,6 +5,7 @@ import react from '@astrojs/react';
 import keystatic from '@keystatic/astro';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import remarkRepairContent from './src/plugins/remark-repair-content.mjs';
 import vercel from '@astrojs/vercel';
 
 // وقتی ADMIN_MODE=true باشه (فقط روی دیپلوی Vercel که برای پنل ادمین استفاده میشه)
@@ -18,8 +19,9 @@ export default defineConfig({
   adapter: isAdminBuild ? vercel() : undefined,
   markdown: {
     // پشتیبانی از فرمول‌های ریاضی LaTeX در همه‌ی محتوای Markdown و MDX
-    remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
+    // ترتیب مهم است: remarkMath اول، بعد ترمیم‌کننده‌ی محتوای خراب‌شده توسط ادیتور
+    remarkPlugins: [remarkMath, remarkRepairContent],
+    rehypePlugins: [[rehypeKatex, { throwOnError: false, strict: 'ignore' }]],
   },
   integrations: [
     mdx(),
