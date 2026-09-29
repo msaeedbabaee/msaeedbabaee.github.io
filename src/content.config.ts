@@ -9,6 +9,13 @@ const optionalUrl = z.union([z.string().url(), z.literal('')]).nullish();
 const optionalText = z.string().nullish();
 const optionalImage = z.string().nullish();
 
+/** Titles/descriptions pasted from a Markdown editor often start with "# " or contain line
+ *  breaks (YAML folded text). Normalise them so they never leak into the page. */
+const cleanText = (v: unknown) =>
+  typeof v === 'string' ? v.replace(/^\s*#+\s*/, '').replace(/\s+/g, ' ').trim() : v;
+const title = z.preprocess(cleanText, z.string().min(1));
+const description = z.preprocess(cleanText, z.string().min(1));
+
 /** draft / unlisted / scheduled — shared by every content collection */
 const visibility = {
   draft: z.boolean().optional().default(false),
@@ -38,8 +45,8 @@ const tags = defineCollection({
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
-    title: z.string(),
-    description: z.string(),
+    title,
+    description,
     category: z.string().optional().default('Technical'),
     date: z.coerce.date(),
     updated: z.coerce.date().nullish(),
@@ -54,8 +61,8 @@ const blog = defineCollection({
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
   schema: z.object({
-    title: z.string(),
-    description: z.string(),
+    title,
+    description,
     category: z.string().optional(),
     tags: z.array(z.string()).optional(),
     year: z.number().nullish(),
@@ -82,8 +89,8 @@ const projects = defineCollection({
 const research = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/research' }),
   schema: z.object({
-    title: z.string(),
-    description: z.string(),
+    title,
+    description,
     authors: optionalText, // was missing → silently stripped by Zod before
     type: z.string().optional(),
     status: z.string().optional(),
@@ -99,8 +106,8 @@ const research = defineCollection({
 const services = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/services' }),
   schema: z.object({
-    title: z.string(),
-    description: z.string(),
+    title,
+    description,
     tags: z.array(z.string()).optional(),
     order: z.number().optional().default(99),
     seo,
