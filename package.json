@@ -11,8 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "check:content": "node scripts/content-tools.mjs check",
-    "fix:content": "node scripts/content-tools.mjs fix",
-    "prebuild": "node scripts/content-tools.mjs check"
+    "fix:content": "node scripts/content-tools.mjs fix"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.8",

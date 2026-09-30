@@ -1,6 +1,7 @@
 import { config, collection, singleton, fields } from '@keystatic/core';
 import { block } from '@keystatic/core/content-components';
 import { mathComponents } from './src/keystatic/math-components';
+import { coverImageField, coverFrame } from './src/keystatic/cover-frame';
 
 /* ────────────────────────────────────────────────────────────────
    1) MDX components  (must match src/components/mdx/*)
@@ -114,9 +115,9 @@ const yearField = () => fields.integer({ label: 'Year', validation: { min: 1990,
  * entry that predates this and still needs a manual rename.
  */
 const coverImage = (dir: string) =>
-  fields.image({
+  coverImageField({
     label: 'Cover Image',
-    description: 'Optional. Recommended width ~1600px, WebP or JPG under 300KB.',
+    description: 'Optional. Recommended 1600×900 px (16:9), WebP or JPG under 300KB. Drag & drop a file here, then frame it below.',
     directory: `public/assets/images/${dir}`,
     publicPath: `/assets/images/${dir}/`,
   });
@@ -242,6 +243,7 @@ export default config({
         ...visibilityFields(),
         tags: tagsField(),
         image: coverImage('blog'),
+        imageFrame: coverFrame(),
         imageAlt: coverAlt(),
         seo: seoField(),
         content: mdxContent('blog'),
@@ -265,6 +267,7 @@ export default config({
         repoUrl: fields.url({ label: 'Repository URL (optional)' }),
         ...visibilityFields(),
         image: coverImage('projects'),
+        imageFrame: coverFrame(),
         imageAlt: coverAlt(),
         gallery: fields.array(
           fields.object({
