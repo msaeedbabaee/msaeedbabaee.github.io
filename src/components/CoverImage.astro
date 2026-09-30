@@ -1,0 +1,22 @@
+---
+// Card cover image with the optional focal-point/zoom framing set in the content panel.
+// Must sit inside a box that already crops it (e.g. `aspect-video overflow-hidden`).
+import { frameStyleString, type CoverFrame } from '../utils/coverFrame';
+
+interface Props {
+  src: string;
+  alt: string;
+  frame?: CoverFrame | null;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+}
+const { src, alt, frame, class: extra = '', loading = 'lazy' } = Astro.props;
+const style = frameStyleString(frame);
+---
+<img
+  src={src}
+  alt={alt}
+  class:list={['h-full w-full object-cover', extra]}
+  style={style}
+  loading={loading}
+/>

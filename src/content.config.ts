@@ -9,6 +9,15 @@ const optionalUrl = z.union([z.string().url(), z.literal('')]).nullish();
 const optionalText = z.string().nullish();
 const optionalImage = z.string().nullish();
 
+/** Focal point + zoom chosen in the panel's cover-image framer (see src/utils/coverFrame.ts). */
+const imageFrame = z
+  .object({
+    x: z.number().min(0).max(100),
+    y: z.number().min(0).max(100),
+    zoom: z.number().min(1).max(3),
+  })
+  .nullish();
+
 /** Titles/descriptions pasted from a Markdown editor often start with "# " or contain line
  *  breaks (YAML folded text). Normalise them so they never leak into the page. */
 const cleanText = (v: unknown) =>
@@ -52,6 +61,7 @@ const blog = defineCollection({
     updated: z.coerce.date().nullish(),
     tags: z.array(z.string()).optional(),
     image: optionalImage,
+    imageFrame,
     imageAlt: optionalText,
     seo,
     ...visibility,
@@ -70,6 +80,7 @@ const projects = defineCollection({
     liveUrl: optionalUrl,
     repoUrl: optionalUrl,
     image: optionalImage,
+    imageFrame,
     imageAlt: optionalText,
     gallery: z
       .array(

@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import CoverImage from '../components/CoverImage.astro';
 import { getCollection, getEntry } from 'astro:content';
 import { getSkillVisual } from '../utils/skillVisual';
 
@@ -75,12 +76,7 @@ const techStack = techStackEntry!.data;
           >
             {project.data.image ? (
               <div class="aspect-video w-full overflow-hidden bg-muted">
-                <img
-                  src={project.data.image}
-                  alt={project.data.title}
-                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  loading="lazy"
-                />
+                <CoverImage src={project.data.image} alt={project.data.imageAlt || project.data.title} frame={project.data.imageFrame} class="transition-transform duration-300 group-hover:scale-105" />
               </div>
             ) : (
               <div class="aspect-video w-full bg-gradient-to-br from-primary/15 via-muted to-secondary/25 flex items-center justify-center">
