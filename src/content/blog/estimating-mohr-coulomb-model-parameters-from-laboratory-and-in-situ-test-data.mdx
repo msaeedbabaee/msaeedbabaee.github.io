@@ -10,68 +10,39 @@ unlisted: false
 tags: []
 seo: {}
 ---
-در ادامه، نسخه جامع، نهایی و کامل مقاله انگلیسی بازنویسی شده است. این مقاله اکنون شامل تمامی بخش‌های درخواستی از جمله **مزایا، معایب، کاربردها، خطاهای متداول مدلسازی، المان‌های تماسی (Interface)، جدول مرجع سریع، مثال عددی واقعی، سوالات متداول (FAQ)، تصاویر آزمایشگاهی و الگوریتم کالیبراسیون/تحلیل برگشتی** است.
-
-\
-
-
 Estimating Mohr-Coulomb Model Parameters from Laboratory and In-Situ Test Data: Standard Engineering Practice, Back-Analysis, and Modeling Pitfalls
 
 Accurately determining Mohr-Coulomb parameters is a fundamental step in numerical modeling across general geotechnical software packages—such as **PLAXIS**, **FLAC / FLAC3D**, **GEO5**, **SIGMA/W**, **RS2 / RS3**, and **MIDAS GTS NX**. While advanced constitutive models capture stress-dependent stiffness and non-linear strain behavior, the **Mohr-Coulomb (MC)** linear elastic-perfectly plastic model remains the primary baseline across North American, European, Iranian, and international consulting practices due to its transparency, computational efficiency, and widely accepted parameter relationships.
 
-\
-
+\\
 
 ## 1. Applications, Advantages, and Limitations of the Mohr-Coulomb Model
 
 ### A) Typical Applications
 
 * **Slope Stability & Landslides:** Calculating Factors of Safety (FoS) via shear strength reduction (c-phi reduction techniques).
-
-
 * **Foundation Bearing Capacity:** Estimating ultimate bearing capacity for shallow strip, isolated, or raft foundations.
-
-
 * **Retaining Structures & Excavation Support:** Estimating active/passive earth pressures and global wall stability for anchored or sheet pile walls.
-
-
 * **Tunnelling & Caverns:** Preliminary stability assessment and plastic zone estimation in rock masses or stiff clays.
-
-
 
 ### B) Key Advantages
 
 * **Simplicity & Minimum Parameters:** Requires only 5 physical parameters that are easily understood and obtainable from standard site investigations.
-
-
 * **High Computational Efficiency:** Linear elasticity combined with a fixed yield surface ensures fast convergence in FEA/FDA solvers.
-
-
 * **Direct Alignment with Standard Codes:** Parameter inputs align directly with traditional limit equilibrium equations and design codes (AASHTO, Eurocode 7, etc.).
-
-
 
 ### C) Limitations
 
 * **Constant Elastic Modulus:** Ignores stress-dependent stiffness (stiffness does not increase with depth/confining stress automatically).
-
-
 * **Linear Elasticity Before Yield:** Overestimates soil stiffness at larger strains and fails to model small-strain stiffness nonlinearity.
-
-
 * **Symmetric Unloading/Reloading:** Uses the same modulus $E$ for primary loading and unloading, leading to unrealistically large bottom heave predictions in deep excavations.
-
-
 * **No Strain Hardening/Softening:** Assumes ideal plasticity, ignoring peak-to-residual strength drops in dense sands or overconsolidated clays.
-
-
 
 ## 2. Primary Mohr-Coulomb Model Parameters
 
 Regardless of the software package used, the Mohr-Coulomb model relies on five core parameters:
 
-\
-
+\\
 
 | **Parameter**       | **Symbol**    | **Standard Units**                             | **Engineering Role**                                       |
 | ------------------- | ------------- | ---------------------------------------------- | ---------------------------------------------------------- |
@@ -85,48 +56,28 @@ Regardless of the software package used, the Mohr-Coulomb model relies on five c
 
 Laboratory testing—primarily **Triaxial Compression (CD/CU/UU)** and **Direct Shear (DS)** tests—provides the primary physical basis for parameter selection.
 
-\
-
+\\
 
 ### A) Triaxial Compression Test (CD / CU)
 
 #### 1. Testing Procedure & Data Recording
 
 * **Specimen Preparation:** A cylindrical soil sample (typically $38 \text\{ mm}$ or $50 \text\{ mm}$ diameter with a 2:1 height-to-diameter ratio) is trimmed and saturated inside a triaxial cell.
-
-
 * **Consolidation Phase:** Isotropic cell pressure ($\sigma\_3$) is applied. In a Consolidated Drained (CD) or Consolidated Undrained (CU) test, drainage is allowed until consolidation completes under $\sigma\_3$.
-
-
 * **Shearing Phase:** Axial force ($F$) is applied continuously via a loading ram at a controlled displacement rate while cell pressure ($\sigma\_3$) is kept constant.
-
-
 * **Recorded Variables:**
 
-  \
-
+  \\
 
   * Axial displacement ($\Delta L$) $\rightarrow$ Axial Strain: $\varepsilon\_a = \frac\{\Delta L}\{L\_0}$
-
-
   * Axial force ($F$) $\rightarrow$ Deviator Stress: $q = (\sigma\_1 - \sigma\_3) = \frac\{F}\{A\_c}$ *(where $A\_c$ is the corrected cross-sectional area)*
-
-
   * Volumetric change ($\Delta V$) \[CD test] $\rightarrow$ Volumetric Strain: $\varepsilon\_v = \frac\{\Delta V}\{V\_0}$
-
-
   * Excess pore water pressure ($\Delta u$) \[CU test]
-
-
 
 #### 2. Plotted Curves & Graphical Interpretations
 
 * **Deviator Stress ($q$) vs. Axial Strain ($\varepsilon\_a$):** Plotted for multiple confining pressures ($\sigma\_\{3a}, \sigma\_\{3b}, \sigma\_\{3c}$) to evaluate non-linear stiffness and peak strength $q\_\{\text\{max}}$.
-
-
 * **Mohr Circles & Failure Envelope:** Normal effective stress $\sigma'$ vs. Shear stress $\tau$ at peak failure.
-
-
 
 #### 3. Parameter Extraction Equations
 
@@ -134,43 +85,35 @@ Laboratory testing—primarily **Triaxial Compression (CD/CU/UU)** and **Direct 
 
   Since the Mohr-Coulomb model uses a single linear modulus, standard practice extracts the secant modulus at 50% peak deviator stress:
 
-  \
-
+  \\
 
   $$E\_\{50} = \frac\{0.5 \cdot q\_\{\text\{max}}}\{\varepsilon\_\{50}}$$
 
   *(where $q\_\{\text\{max}} = \sigma\_\{1,f} - \sigma\_3$, and $\varepsilon\_\{50}$ is the strain at $0.5 \cdot q\_\{\text\{max}}$).*
-
-
 * **Effective Cohesion ($c'$) and Friction Angle ($\phi'$):**
 
-  \
-
+  \\
 
   1. Construct effective stress Mohr circles at failure using principal stresses:
 
-     \
-
+     \\
 
      $$\sigma'\_\{1,f} = \sigma\_\{1,f} - u\_f, \quad \sigma'\_\{3,f} = \sigma\_\{3,f} - u\_f$$
   2. Draw the best-fit linear envelope tangent to the circles:
 
-     \
-
+     \\
 
      $$\tau\_f = c' + \sigma' \tan(\phi')$$
   3. *Alternative ($p'-q$ Space Formulation):* Plot $p' = \frac\{\sigma'\_1 + \sigma'\_3}\{2}$ against $q = \sigma'\_1 - \sigma'\_3$ at failure. The linear fit yields slope $M$ and intercept $d$, converted via:
 
-     \
-
+     \\
 
      $$\sin(\phi') = \frac\{M}\{2 + M}, \quad c' = d \cdot \frac\{1 - \sin(\phi')}\{2 \cdot \cos(\phi')}$$
 * **Dilatancy Angle ($\psi$):**
 
   Calculated from the maximum rate of volume expansion ($\varepsilon\_v$) relative to axial strain ($\varepsilon\_a$) during shear:
 
-  \
-
+  \\
 
   $$\sin(\psi) = \frac\{-\frac\{d\varepsilon\_v}\{d\varepsilon\_a}}\{2 - \frac\{d\varepsilon\_v}\{d\varepsilon\_a}}$$
 
@@ -179,84 +122,55 @@ Laboratory testing—primarily **Triaxial Compression (CD/CU/UU)** and **Direct 
 #### 1. Procedure & Data Extraction
 
 1. Soil is placed in a split shear box and consolidated under normal force $N$ ($\sigma = N / A$).
-
-
 2. The box is sheared horizontally at a constant speed, recording shear force $T$ ($\tau = T / A$) and vertical displacement.
-
-
 3. Peak shear stress ($\tau\_f$) is plotted against applied normal stress ($\sigma'$).
-
-
 4. The linear envelope slope yields $\tan(\phi')$ and the vertical intercept yields $c'$.
-
-
 
 ### C) Soil-Structure Interface Parameter ($R\_\{\text\{inter}}$)
 
 In software like PLAXIS, RS2, or MIDAS GTS NX, structural elements (retaining walls, piles, geotextiles) require interface properties to simulate soil-structure interaction. The interface reduction factor $R\_\{\text\{inter}}$ scales the soil strength parameters:
 
-\
-
+\\
 
 $$c\_\{\text\{interface}} = R\_\{\text\{inter}} \cdot c\_\{\text\{soil}}$$
 
 $$\tan(\phi\_\{\text\{interface}}) = R\_\{\text\{inter}} \cdot \tan(\phi\_\{\text\{soil}})$$
 
 * **Concrete to Soil:** $R\_\{\text\{inter}} \approx 0.65 - 0.70$
-
-
 * **Steel Sheet Piles to Sand:** $R\_\{\text\{inter}} \approx 0.50 - 0.60$
-
-
 * **Geotextile / Geogrid to Soil:** $R\_\{\text\{inter}} \approx 0.80 - 0.90$
-
-
 
 ## 4. In-Situ Field Test Correlations
 
 When undisturbed laboratory samples are difficult to obtain, field correlations are widely utilized across North American, European, and Middle Eastern practices.
 
-\
-
+\\
 
 ### A) Standard Penetration Test (SPT)
 
 Using energy- and overburden-corrected blow counts ($N\_\{60}$ or $(N\_1)\_\{60}$):
 
-\
-
+\\
 
 * **Friction Angle ($\phi'$):**
 
-  \
+  \\
 
-
-  $\phi' \approx 27.1 + 0.3 \cdot (N\_1)\_\{60} - 0.00054 \cdot \[(N\_1)\_\{60}]^2 \quad \text\{(Peck, Hanson, \\& Thornburn)}$
+  \phi' \approx 27.1 + 0.3 \cdot (N\_1)*\{60} - 0.00054 \cdot \[(N\_1)*\{60}]^2 \quad \text\{(Peck, Hanson, & Thornburn)}
 
 
 * **Young's Modulus ($E$):**
 
-  \
-
+  \\
 
   * Normally consolidated sands: $E \text\{ (MPa)} = 0.75 \cdot N\_\{60} \quad \text\{or} \quad E \text\{ (ksf)} = 15 \cdot N\_\{60}$
-
-
   * Dense sands / gravels: $E \text\{ (MPa)} = (1.0 \text\{ to } 1.2) \cdot N\_\{60}$
-
-
 
 ### B) Cone Penetration Test (CPT)
 
 * **Friction Angle ($\phi'$):** $\phi' = \arctan \left\[ 0.1 + 0.38 \cdot \log\left(\frac\{q\_c}\{\sigma'\_\{v0}}\right) \right]$
-
-
 * **Undrained Shear Strength ($s\_u$):** $s\_u = \frac\{q\_c - \sigma\_\{v0}}\{N\_\{kt}} \quad (N\_\{kt} = 12 - 18)$
-
-
 * **Young's Modulus ($E$):** $E = 2.5 \cdot q\_c \quad \text\{(Sands)}, \quad E = (3 \text\{ to } 8) \cdot q\_c \quad \text\{(Clays)}$
-
-
 
 ## 5. Typical Parameter Range Reference Table
 
@@ -273,43 +187,32 @@ Using energy- and overburden-corrected blow counts ($N\_\{60}$ or $(N\_1)\_\{60}
 
 A Drained Triaxial Test (CD) on a dense sand sample ($\sigma\_3' = 100 \text\{ kPa}$) yields:
 
-\
-
+\\
 
 * Peak deviator stress: $q\_\{\text\{max}} = 350 \text\{ kPa}$ at axial strain $\varepsilon\_a = 4.2\\%$.
-
-
 * At $50\\%$ peak deviator stress ($q\_\{50} = 175 \text\{ kPa}$), axial strain is $\varepsilon\_\{50} = 0.50\\%$.
-
-
 * Maximum volumetric contraction rate relative to axial strain gives $\frac\{d\varepsilon\_v}\{d\varepsilon\_a} = -0.18$.
-
-
 
 ### Calculation Steps:
 
 1. **Secant Modulus ($E\_\{50}$):**
 
-   \
-
+   \\
 
    $$E\_\{50} = \frac\{175 \text\{ kPa}}\{0.0050} = 35,000 \text\{ kPa} = 35 \text\{ MPa}$$
 2. **Major Principal Stress at Failure ($\sigma\_\{1,f}'$):**
 
-   \
-
+   \\
 
    $$\sigma\_\{1,f}' = q\_\{\text\{max}} + \sigma\_3' = 350 + 100 = 450 \text\{ kPa}$$
 3. **Friction Angle $\phi'$ (Assuming $c' \approx 1.0 \text\{ kPa}$ for numerical stability):**
 
-   \
-
+   \\
 
    $$\sin(\phi') = \frac\{\sigma\_\{1,f}' - \sigma\_\{3,f}'}\{\sigma\_\{1,f}' + \sigma\_\{3,f}'} = \frac\{450 - 100}\{450 + 100} = \frac\{350}\{550} = 0.636 \implies \phi' = 39.5^\circ$$
 4. **Dilatancy Angle ($\psi$):**
 
-   \
-
+   \\
 
    $$\sin(\psi) = \frac\{-(-0.18)}\{2 - (-0.18)} = \frac\{0.18}\{2.18} = 0.0825 \implies \psi \approx 4.7^\circ \quad (\text\{or via Bolton: } \psi \approx 39.5^\circ - 30^\circ = 9.5^\circ)$$
 
@@ -324,42 +227,26 @@ Due to boundary friction and non-uniform stress states in real physical testing,
 
 1. **Setting Cohesion to Zero ($c' = 0$):**
 
-   \
-
+   \\
 
    * *Issue:* Purely frictional materials with $c' = 0$ cause division-by-zero or matrix singularity issues at unconfined ground surface elements in FEA codes (PLAXIS / RS2).
-
-
    * *Fix:* Always apply a small artificial cohesion ($c' = 1 - 2 \text\{ kPa}$ or $20 - 40 \text\{ psf}$).
-
-
 2. **Inputting $\nu = 0.50$ for Undrained Analysis:**
 
-   \
-
+   \\
 
    * *Issue:* Entering $\nu = 0.50$ in effective stress coupled undrained formulations (PLAXIS *Undrained A*) leads to an infinite bulk modulus ($K \rightarrow \infty$) and immediate numerical crash.
-
-
    * *Fix:* Input drained Poisson's ratio ($\nu \approx 0.30$). The software automatically computes pore water stiffness through the fluid bulk modulus.
-
-
 3. **Using Initial Tangent Modulus Instead of $E\_\{50}$:**
 
-   \
-
+   \\
 
    * *Issue:* Using the initial small-strain slope ($E\_0$) severely overestimates soil stiffness, resulting in unconservatively small settlement predictions.
-
-
 4. **Ignoring Operational Strain Level:**
 
-   \
-
+   \\
 
    * *Issue:* Applying a single $E\_\{50}$ derived at high failure strains to model retaining wall deflections (which occur at small strain levels) underpredicts soil stiffness.
-
-
 
 ## 9. Frequently Asked Questions (FAQ)
 
@@ -367,15 +254,13 @@ Due to boundary friction and non-uniform stress states in real physical testing,
 
 *Answer:* Because the Mohr-Coulomb model is elastic-perfectly plastic, its elastic slope is constant up to failure. Using $E\_\{\text\{init}}$ matches the very beginning of loading but drastically overestimates stiffness as the soil approaches yield. $E\_\{50}$ represents an optimal secant average over the typical working stress range ($0 - 50\\%$ peak load).
 
-\
-
+\\
 
 **Q2: How do I handle soil stiffness increasing with depth using Mohr-Coulomb?**
 
 *Answer:* Standard Mohr-Coulomb uses a constant $E$. To model depth dependency in software like PLAXIS or RS2, you must either subdivide the soil stratum into multiple sub-layers with increasing $E\_i$ values or use the $E\_\{\text\{increment}}$ parameter ($E(y) = E\_\{\text\{ref}} + E\_\{\text\{inc}} \cdot (y\_\{\text\{ref}} - y)$).
 
-\
-
+\\
 
 **Q3: When should I upgrade from Mohr-Coulomb to advanced models like Hardening Soil (HS)?**
 
