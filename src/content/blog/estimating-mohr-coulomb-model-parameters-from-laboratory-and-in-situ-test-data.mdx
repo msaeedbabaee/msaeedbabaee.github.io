@@ -10,6 +10,13 @@ unlisted: false
 tags: []
 seo: {}
 ---
+در ادامه، نسخه جامع، نهایی و کامل مقاله انگلیسی بازنویسی شده است. این مقاله اکنون شامل تمامی بخش‌های درخواستی از جمله **مزایا، معایب، کاربردها، خطاهای متداول مدلسازی، المان‌های تماسی (Interface)، جدول مرجع سریع، مثال عددی واقعی، سوالات متداول (FAQ)، تصاویر آزمایشگاهی و الگوریتم کالیبراسیون/تحلیل برگشتی** است.
+
+\
+
+
+Estimating Mohr-Coulomb Model Parameters from Laboratory and In-Situ Test Data: Standard Engineering Practice, Back-Analysis, and Modeling Pitfalls
+
 Accurately determining Mohr-Coulomb parameters is a fundamental step in numerical modeling across general geotechnical software packages—such as **PLAXIS**, **FLAC / FLAC3D**, **GEO5**, **SIGMA/W**, **RS2 / RS3**, and **MIDAS GTS NX**. While advanced constitutive models capture stress-dependent stiffness and non-linear strain behavior, the **Mohr-Coulomb (MC)** linear elastic-perfectly plastic model remains the primary baseline across North American, European, Iranian, and international consulting practices due to its transparency, computational efficiency, and widely accepted parameter relationships.
 
 \
@@ -224,7 +231,9 @@ Using energy- and overburden-corrected blow counts ($N\_\{60}$ or $(N\_1)\_\{60}
   \
 
 
-  $$\phi' \approx 27.1 + 0.3 \cdot (N\_1)\_\{60} - 0.00054 \cdot \[(N\_1)\_\{60}]^2 \quad \text\{(Peck, Hanson, \\& Thornburn)}$$
+  $\phi' \approx 27.1 + 0.3 \cdot (N\_1)\_\{60} - 0.00054 \cdot \[(N\_1)\_\{60}]^2 \quad \text\{(Peck, Hanson, \\& Thornburn)}$
+
+
 * **Young's Modulus ($E$):**
 
   \
@@ -309,40 +318,7 @@ A Drained Triaxial Test (CD) on a dense sand sample ($\sigma\_3' = 100 \text\{ k
 Due to boundary friction and non-uniform stress states in real physical testing, directly inputting raw laboratory values into FEA/FDA software can cause discrepancies. Practicing numerical modelers perform **Inverse Analysis / Digital Twin Calibration** using drivers like PLAXIS SoilTest, FLAC Single Element, or Python optimization scripts.
 
 \
-
-
-```
-       +-------------------------------------------------------+
-       |   1. Laboratory Data (q vs ε_a, τ vs σ)               |
-       +-------------------------------------------------------+
-                                   |
-                                   v
-       +-------------------------------------------------------+
-       |   2. Initial Parameter Extraction (E_50, c', φ', ψ)    |
-       +-------------------------------------------------------+
-                                   |
-                                   v
-       +-------------------------------------------------------+
-       |   3. Single-Element Digital Twin Simulation            |
-       |      (PLAXIS SoilTest, FLAC Single Element, Python)   |
-       +-------------------------------------------------------+
-                                   |
-                                   v
-       +-------------------------------------------------------+
-       |   4. Curve Comparison (Numerical vs. Physical Lab)    |
-       +-------------------------------------------------------+
-                                   |
-                         [ Check Optimization ]
-                        /                      \
-             (Discrepancy > Tolerance)   (Good Match)
-                      /                          \
-                     v                            v
-       +--------------------------+  +-------------------------+
-       | Adjust Parameters (E, ψ) |  | Calibrated Model Inputs |
-       | or Optimization Algorithm|  | Ready for FEA Design    |
-       +--------------------------+  +-------------------------+
-
-```
+![](/assets/images/blog/estimating-mohr-coulomb-model-parameters-from-laboratory-and-in-situ-test-data/Gemini_Generated_Image_dkuknfdkuknfdkuk.jpg)
 
 ## 8. Common Pitfalls and Modeling Errors
 
