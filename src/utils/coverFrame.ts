@@ -5,10 +5,10 @@
 // Rendering model (all cards are 16:9 with object-fit: cover):
 //   object-position: x% y%   → which part of the photo stays in view (the focal point)
 //   transform-origin: x% y%  → zoom grows around that same point (never reveals empty edges)
-//   scale: zoom              → 1 … 3
+//   scale: zoom              → 0.5 … 3   (below 1 the framed photo shrinks; the card background shows around it)
 
 export const FRAME_ASPECT = 16 / 9;
-export const ZOOM_MIN = 1;
+export const ZOOM_MIN = 0.5;
 export const ZOOM_MAX = 3;
 
 export type CoverFrame = { x: number; y: number; zoom: number };
