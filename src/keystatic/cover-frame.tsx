@@ -254,7 +254,7 @@ function FrameInput({ value, onChange }: { value: CoverFrame; onChange(v: CoverF
 
       <div style={S.hint}>
         This box has the exact shape of the cards on Blog, Projects and Home (16:9). Drag the photo to choose what stays in view,
-        scroll or use the slider to zoom. Arrow keys nudge, +/− zoom. The original file is never changed.
+        scroll or use the slider to zoom (0.5× – 3×; below 1× the photo shrinks inside the card). Arrow keys nudge, +/− zoom. The original file is never changed.
       </div>
     </div>
   );
